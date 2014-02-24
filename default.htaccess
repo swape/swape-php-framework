@@ -1,0 +1,29 @@
+<ifModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/php
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
+</ifModule>
+
+<ifModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/png "access plus 10 days"
+ExpiresByType image/jpg "access plus 10 days"
+ExpiresByType image/jpeg "access plus 50 days"
+ExpiresByType image/ico "access plus 10 month"
+ExpiresByType image/gif "access plus 30 days"
+ExpiresByType text/javascript "access plus 6 days"
+ExpiresByType application/javascript "access plus 6 days"
+ExpiresByType text/css "access plus 6 days"
+</ifModule>
+
+RewriteEngine On
+RewriteRule ^(index.php|robots.txt|favicon.ico|css|images|js) - [PT,L]
+RewriteCond %{REQUEST_FILENAME} !(\.png|\.swf|\.js|\.gif|\.jpe?g|\.css)
+RewriteRule ^(.*)$ index.php/$1 [QSA]

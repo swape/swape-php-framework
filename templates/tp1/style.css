@@ -1,0 +1,55 @@
+/* Template 1 by Alireza Balouch */
+
+body{
+    padding: 0;
+    margin: 0;
+      font-family: sans-serif;
+    color: #333;
+    background-color: #efefef;
+    font-size:14px;
+    line-height:1.5em;
+}
+#wraper {
+    width: 100%;
+    display: table;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+#content{
+    background-color: #FFF;
+    display: table-cell;
+    width: 80%;
+    vertical-align: top
+}
+#innercontent{
+    padding:20px;
+}
+#menu {
+    width: 20%;
+    vertical-align: top;
+    background-color: #ccc;
+    display: table-cell;
+}
+#menu a{
+    display:block;
+background-color:#369;
+    color:white;  
+    padding:5px 10px;font-size:18px;
+    text-shadow:1px 1px 1px rgba(0,0,0,0.8);
+    margin-bottom:1px
+}
+#menu a:hover{background-color:#258}
+a{
+    text-decoration:none;
+}
+h1{font-size:35px;line-height:1.5em}
+h2{font-size:22px;line-height:1.5em}
+h3{font-size:16px;line-height:1.5em}
+
+
+@media (max-width: 960px) {
+     #content, #menu{
+        width: auto;
+        display:block;
+    }
+}
