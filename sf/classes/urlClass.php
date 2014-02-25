@@ -10,11 +10,9 @@ class urlClass{
     public $arrQuery = array();
     
 	public function __construct(){
-		$strURL = @$_SERVER['REQUEST_URI'];
-		$this->arrVar = explode('/' , $strURL );
+		$this->arrVar = explode('/' , @$_SERVER['REQUEST_URI'] );
 		if(count($this->arrVar) != 0){
-			$strLast = $this->arrVar[count($this->arrVar) - 1];
-			$arrT = explode('?', $strLast);
+			$arrT = explode('?', $this->arrVar[count($this->arrVar) - 1]);
 			$this->arrVar[count($this->arrVar) - 1] = @$arrT[0];
 		}
 		$a = explode('&', @$_SERVER['QUERY_STRING']);

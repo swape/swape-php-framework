@@ -9,11 +9,9 @@
 		}
 	}
 */
-
 function my_autoloader($class){
     global $strSFPath;
     include $strSFPath . 'sf/classes/' . $class . '.php';
 }
-
 spl_autoload_register('my_autoloader');
 ?>

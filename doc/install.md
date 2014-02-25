@@ -1,4 +1,4 @@
-# How to install swape framework
+# How to install swape php framework
 
 ##Database:##
 

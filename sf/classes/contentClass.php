@@ -57,12 +57,9 @@ class contentClass{
     
     private function getPerm($strObjName){
         global $db;
-        $blnReturn = false;
         $strSQL = "SELECT count(*) as mycount FROM sf_menu WHERE uid = '" . @$_SESSION['uid'] . "' AND module_name LIKE '" . $db->clean($strObjName). "' LIMIT 1";
         $arrData = $db->get($strSQL);
-        if(@$arrData[0]['mycount'] == 1){
-            $blnReturn = true;
-        }
+        $blnReturn = (@$arrData[0]['mycount'] == 1) ? true : false;
         return $blnReturn;
     }
 }

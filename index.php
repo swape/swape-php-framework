@@ -2,6 +2,14 @@
 session_start();
 require('config.php');
 
+/* AUTH handling */
+if(@$_GET['logout'] == 1 && @$_SESSION['uid'] != ''){
+    foreach($_SESSION as $key=>$row){
+        unset($_SESSION[$key]);
+    }
+    header('Location: ' . $strWebPath );
+}
+
 $strSFPath = str_replace('index.php', '', $_SERVER['SCRIPT_FILENAME']);
 $strWebPath = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
 $intClassIndex = count(explode('/', $strWebPath )) - 1;
@@ -25,20 +33,9 @@ $strHead = '';
 $strJs = '';
 $strMenu = '';
 
-/* AUTH handling */
-if(@$_GET['logout'] == 1 && @$_SESSION['uid'] != ''){
-    unset($_SESSION['uid']);
-    unset($_SESSION['utoken']);
-    foreach($_SESSION as $key=>$row){
-        unset($_SESSION[$key]);
-    }
-    header('Location: ' . $strWebPath );
-}
-
 /* MODULE */
 try{
     $strContent = $objContent->getContent($strClass, $strFunction);
-    
 	if(@$_GET['ajax'] == 1){
 		echo $strContent;
 	}else{

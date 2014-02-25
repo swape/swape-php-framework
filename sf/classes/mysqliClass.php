@@ -6,11 +6,11 @@
 class mysqliClass{
 	public $objLink = '' ;
 	public $intQ = 0;
-	
+
 	public function __construct($strUser, $strPass, $strDB, $strHost = 'localhost' ){
 		$this->init( $strUser, $strPass, $strDB, $strHost);
 	}
-		
+
 	public function init( $strUser, $strPass, $strDB, $strHost = 'localhost' ){
 		if(extension_loaded('mysqli')){
 			$mysqli = new mysqli($strHost, $strUser , $strPass , $strDB );
@@ -24,7 +24,7 @@ class mysqliClass{
 		}
 	}
 
-	public function get($strSQL){
+	public function get(&$strSQL){
 		$arrData = array();
         try{
             $dbLink = $this->objLink;
@@ -40,8 +40,8 @@ class mysqliClass{
         $this->intQ++;
 		return $arrData;
 	}
-	
-	public function set($strSQL){
+
+	public function set(&$strSQL){
 		$this->intQ++;
         try{
             $dbLink = $this->objLink;
@@ -52,15 +52,15 @@ class mysqliClass{
             return -666;
         }
 	}
-	
-	public function clean($strInput){ // cleaning the input
+
+	public function clean(&$strInput){ // cleaning the input
 		return mysqli_real_escape_string($this->objLink , trim($strInput));
 	}
-	
+
 	public function close(){ // in case you need that
 		$this->objLink->close();
 	}
-	
+
 	public function getFields($strTableName){
 		$strSQL = "SELECT * FROM " . $strTableName . " LIMIT 1";
         $dbLink = $this->objLink;
@@ -68,7 +68,6 @@ class mysqliClass{
 		if ($objRes){
 			$objInfo = mysqli_fetch_fields($objRes);
 		}
-		
 		return json_encode($objInfo);
 	}
 }

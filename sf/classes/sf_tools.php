@@ -20,20 +20,14 @@ class sf_tools{
      */
     public function ccache($arrCallable ,$strFilename , $intTTL = '10 min ago'  , $arrParameter = ''){
         // custom cache by Alireza Balouch
-        $strReturn = '';
         $strCCpath = '/tmp/';
         $strFile = $strCCpath . 'ccache_' . md5($strFilename);
         if(file_exists($strFile) and filemtime($strFile) >= strtotime($intTTL) ){
-            $strReturn = file_get_contents($strFile);
-            $strReturn = unserialize($strReturn);
+            $strReturn = unserialize(file_get_contents($strFile));
         }
         else{
             if(is_callable($arrCallable )){
-                if($arrParameter == ''){
-                    $strReturn = call_user_func($arrCallable);
-                }else{
-                    $strReturn = call_user_func_array($arrCallable , $arrParameter );
-                }
+                $strReturn = ($arrParameter == '')? call_user_func($arrCallable) : call_user_func_array($arrCallable , $arrParameter );
                 @file_put_contents($strFile, serialize($strReturn));
                 sf_tools::ccache_Clean(); // this should be from cron
             }else{
@@ -59,7 +53,7 @@ class sf_tools{
         }
     }
    
-    public static function dumpThis($data , $blnTextarea = false){
+    public static function dumpThis(&$data , $blnTextarea = false){
         $out = '';
         if ($data != ''){
             ob_start();
