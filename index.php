@@ -52,7 +52,7 @@ try{
 
 // this is how I add 
 //$strSQL = "UPDATE sf_user SET upass='" . md5('ali' . $strSalt) . "' WHERE uname = 'ali'";
-//$db->set($strSQL);
+//echo $db->set($strSQL);
 
 /* DEBUG */
 /*
