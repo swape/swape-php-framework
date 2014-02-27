@@ -53,7 +53,7 @@ class sf_tools{
         }
     }
    
-    public static function dumpThis(&$data , $blnTextarea = false){
+    public static function dumpThis($data , $blnTextarea = false){
         $out = '';
         if ($data != ''){
             ob_start();

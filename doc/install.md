@@ -2,7 +2,9 @@
 
 ##Database:##
 
-Make db tables from sf.sql file
+Make db tables from sf.sql file.
+Add mysql username and password into config.php file.
+
 
 ##Apache:##
 

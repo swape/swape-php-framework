@@ -2,14 +2,6 @@
 session_start();
 require('config.php');
 
-/* AUTH handling */
-if(@$_GET['logout'] == 1 && @$_SESSION['uid'] != ''){
-    foreach($_SESSION as $key=>$row){
-        unset($_SESSION[$key]);
-    }
-    header('Location: ' . $strWebPath );
-}
-
 $strSFPath = str_replace('index.php', '', $_SERVER['SCRIPT_FILENAME']);
 $strWebPath = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
 $intClassIndex = count(explode('/', $strWebPath )) - 1;
@@ -26,6 +18,14 @@ $strFunction = @$objURL->arrVar[$intFunctionIndex];
 $strThisWebModule = $strWebPath . $strClass .'/';
 $strTemplatePath = $strSFPath . 'templates/' . $strTemplateName . '/';
 $strTemplateWebPath = $strWebPath . 'templates/' . $strTemplateName . '/';
+
+/* AUTH handling */
+if(@$_GET['logout'] == 1 && @$_SESSION['uid'] != ''){
+    foreach($_SESSION as $key=>$row){
+        unset($_SESSION[$key]);
+    }
+    header('Location: ' . $strWebPath );
+}
 
 /* CONTENT */
 $objContent = new contentClass();
@@ -50,10 +50,12 @@ try{
 	echo $e->getMessage();
 }
 
+// this is how I add 
 //$strSQL = "UPDATE sf_user SET upass='" . md5('ali' . $strSalt) . "' WHERE uname = 'ali'";
 //$db->set($strSQL);
-/* DEBUG */
 
+/* DEBUG */
+/*
 echo $strWebPath;
 echo sf_tools::dumpThis(get_included_files() );
 echo sf_tools::dumpThis($_SESSION );
