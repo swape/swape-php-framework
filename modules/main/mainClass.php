@@ -15,7 +15,9 @@ class mainClass{
 		return $strReturn;
 	}
     public function sf_test(){
-        return 'this is test';
+        global $objURL;
+        
+        return sf_tools::dumpThis($objURL);
     }
 }
 
