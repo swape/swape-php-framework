@@ -36,7 +36,7 @@ $strMenu = '';
 /* MODULE */
 try{
     $strContent = $objContent->getContent($strClass, $strFunction);
-	if(@$_GET['ajax'] == 1){
+	if(@$_GET['ajax'] == 1 or @$_SERVER['HTTP_X-Requested-With'] == 'XMLHttpRequest'){
 		echo $strContent;
 	}else{
 		$strCPath = $strSFPath . 'modules/' . @$strClass;
