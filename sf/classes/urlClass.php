@@ -26,4 +26,3 @@ class urlClass{
 		$this->arrQuery = $a;
 	}
 }
-?>

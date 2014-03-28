@@ -5,4 +5,3 @@ $strSalt = 'FLBIWUF#Bkjbsaiio913u9';
 $strTemplateName = 'tp1';
 $strTitle = 'Swape PHP Framework';
 
-?>

@@ -7,8 +7,15 @@ $strWebPath = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
 $intClassIndex = count(explode('/', $strWebPath )) - 1;
 $intFunctionIndex = $intClassIndex + 1;
 $intVarStart = $intFunctionIndex + 1;
-require('sf/include.php');
 
+// autoload classes
+function my_autoloader($class){
+    global $strSFPath;
+    include $strSFPath . 'sf/classes/' . $class . '.php';
+}
+spl_autoload_register('my_autoloader');
+
+// setting up db
 $db = new mysqliClass($arrDB['user'], $arrDB['pass'], $arrDB['db'], $arrDB['host']);
 
 /* URL */
@@ -50,8 +57,8 @@ try{
 	echo $e->getMessage();
 }
 
-// this is how I add 
-//$strSQL = "UPDATE sf_user SET upass='" . md5('ali' . $strSalt) . "' WHERE uname = 'ali'";
+// first user
+//$strSQL = "INSERT INTO sf_user SET upass='" . md5('ali' . $strSalt) . "' , uname = 'ali'";
 //echo $db->set($strSQL);
 
 /* DEBUG */
@@ -62,4 +69,3 @@ echo sf_tools::dumpThis($_SESSION );
 echo sf_tools::sizeConvert(memory_get_usage(true));
 
 //*/
-?>

@@ -81,9 +81,8 @@ class authClass{
      <div><button type="submit" class="button">Sign in</button></div>
 </form></div>';
 	    foreach($_SESSION as $key=>$row){
-				 unset($_SESSION[$key]);
+			unset($_SESSION[$key]);
 		}
 	    return $strReturn;
     }
 }
-?>

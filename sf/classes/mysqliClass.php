@@ -71,4 +71,3 @@ class mysqliClass{
 		return json_encode($objInfo);
 	}
 }
-?>

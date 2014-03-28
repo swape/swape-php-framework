@@ -63,4 +63,3 @@ class contentClass{
         return $blnReturn;
     }
 }
-?>

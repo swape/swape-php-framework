@@ -1,7 +1,7 @@
 <?php
 
 class mainClass{
-	public $intPerm = 0; // 0 = all, 1 only for signed in useres and 2 for custom permission basesd on user id
+	public $intPerm = 0; // 0 = all, 1 = only for signed in useres and 2 = custom permission basesd on user id
 	public function __construct(){
 	    global $strMenu , $strThisWebModule;
 	    $strMenu .= '<a href="' . $strThisWebModule . 'test/">Test function</a>';
@@ -20,5 +20,3 @@ class mainClass{
         return sf_tools::dumpThis($objURL);
     }
 }
-
-?>
