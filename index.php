@@ -1,71 +1,79 @@
 <?php
 session_start();
-require('config.php');
+require(__DIR__ . '/config.php');
 
-$strSFPath = str_replace('index.php', '', $_SERVER['SCRIPT_FILENAME']);
+// finding the script path
+$strSFPath = __DIR__ .'/';
+
+// finding web path
 $strWebPath = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+
+// finding the module path
+$arrPathQuery = explode('?' , $_SERVER['REQUEST_URI']);
+$arrPath = explode('/' , $arrPathQuery[0]);
 $intClassIndex = count(explode('/', $strWebPath )) - 1;
 $intFunctionIndex = $intClassIndex + 1;
 $intVarStart = $intFunctionIndex + 1;
 
+$strClassName = $arrPath[$intClassIndex];
+$strFunctionName = (isset($arrPath[$intFunctionIndex]) and $arrPath[$intFunctionIndex] != '') ? $arrPath[$intFunctionIndex] : 'index';
+
 // autoload classes
 function my_autoloader($class){
-    global $strSFPath;
-    include $strSFPath . 'sf/classes/' . $class . '.php';
+	global $strSFPath;
+	include $strSFPath . 'classes/' . $class . '.php';
 }
 spl_autoload_register('my_autoloader');
 
-// setting up db
-$db = new mysqliClass($arrDB['user'], $arrDB['pass'], $arrDB['db'], $arrDB['host']);
+//
+$arrOut = [];
 
-/* URL */
-$objURL = new urlClass();
-$strClass = (@$objURL->arrVar[$intClassIndex] != '') ? @$objURL->arrVar[$intClassIndex] : 'main';
-$strFunction = @$objURL->arrVar[$intFunctionIndex];
-$strThisWebModule = $strWebPath . $strClass .'/';
-$strTemplatePath = $strSFPath . 'templates/' . $strTemplateName . '/';
-$strTemplateWebPath = $strWebPath . 'templates/' . $strTemplateName . '/';
-
-/* AUTH handling */
-if(@$_GET['logout'] == 1 && @$_SESSION['uid'] != ''){
-    foreach($_SESSION as $key=>$row){
-        unset($_SESSION[$key]);
-    }
-    header('Location: ' . $strWebPath );
-}
-
-/* CONTENT */
-$objContent = new contentClass();
-$strHead = '';
-$strJs = '';
-$strMenu = '';
-
-/* MODULE */
+// getting the content
 try{
-    $strContent = $objContent->getContent($strClass, $strFunction);
-	if(@$_GET['ajax'] == 1 or @$_SERVER['HTTP_X-Requested-With'] == 'XMLHttpRequest'){
-		echo $strContent;
-	}else{
-		$strCPath = $strSFPath . 'modules/' . @$strClass;
-		$strCWPath = $strWebPath . 'modules/' . @$strClass;
-		$strHead .= (file_exists( $strCPath . '/style.min.css'))? '<link rel="stylesheet" href="' . $strCWPath . '/style.min.css" type="text/css" />' : '';
-		$strJs .= (file_exists( $strCPath . '/js.min.js'))? '<script src="' . $strCWPath . '/js.min.js" type="text/javascript"></script>' : '';		
-		include($strTemplatePath . 'index.php');
+	$strClassPath = $strSFPath . 'modules/'. $strClassName . '/' . $strClassName . 'Class.php';
+	if(!file_exists($strClassPath)){
+		// we can not find this class. lets get the main class
+		$strClassPath = $strSFPath . 'modules/main/mainClass.php';
+		if(!file_exists($strClassPath)){
+			throw new Exception('Can not find main/mainClass.php file');
+		}else{
+			$strClassName = 'main';
+			$strFunctionName = (isset($arrPath[$intClassIndex]) and $arrPath[$intClassIndex] != '') ? $arrPath[$intClassIndex] : 'index';
+		}
 	}
-
-}catch(Exception $e){
+	// loading the class
+	require $strSFPath . 'modules/'. $strClassName . '/' . $strClassName . 'Class.php';
+	$strClassName .= 'Class';
+	$objContent = new $strClassName;
+	
+	// getting the Function
+	$strFunctionName = 'sf_' . $strFunctionName;
+	$arrCallable = [$objContent , $strFunctionName];
+	if(is_callable($arrCallable)){
+		$strContent = call_user_func($arrCallable);
+	}else{
+		$strContent = '';
+		throw new Exception('Can not find this function: ' . $strFunctionName);
+	}
+} catch(Exception $e){
+	echo 'Class: ' . $strClassName . "<br/>";
+	echo 'Function: ' . $strFunctionName . "<br/>";
 	echo $e->getMessage();
 }
 
-// first user
-//$strSQL = "INSERT INTO sf_user SET upass='" . md5('ali' . $strSalt) . "' , uname = 'ali'";
-//echo $db->set($strSQL);
+// layout
+if(		(isset($_GET['ajax']) and $_GET['ajax'] == 1)
+	or	(isset($_SERVER['HTTP_X-Requested-With']) and $_SERVER['HTTP_X-Requested-With'] == 'XMLHttpRequest' )
+	or	(isset($arrOut['ajax']) and $arrOut['ajax'] == 1)){
+			echo $strContent;
+}else{
+	// --- loading theme
+	$strThemeName = (isset($arrOut['theme']))?$arrOut['theme'] : $strTemplateName;
+	$strThemeTemplate = (isset($arrOut['template']))?$arrOut['template'] : 'start';
+	$strThemePath = $strSFPath . 'layout/' . $strThemeName;
+	$strThemeWebPath = $strWebPath .'layout/' . $strThemeName;
 
-/* DEBUG */
-/*
-echo $strWebPath;
-echo sf_tools::dumpThis(get_included_files() );
-echo sf_tools::dumpThis($_SESSION );
-echo sf_tools::sizeConvert(memory_get_usage(true));
-
-//*/
+	include($strThemePath . '/header.php');
+	include($strThemePath . '/' . $strThemeTemplate . '.php');
+	include($strThemePath . '/footer.php');
+}
