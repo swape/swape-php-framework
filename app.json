@@ -1,0 +1,6 @@
+{
+  "name": "Start on Heroku: PHP",
+  "description": "Swape php framework",
+  "repository": "https://github.com/swape/swape-php-framework",
+  "addons": []
+}
