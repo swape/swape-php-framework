@@ -9,7 +9,7 @@ class sf_testClass
 
     public function sf_index()
     {
-
+        return false;
     }
 
     public function sf_test2()

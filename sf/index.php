@@ -87,7 +87,6 @@ function startFramework()
               }
             }
 
-
             $arrData = call_user_func_array($arrCallable, ['vars'=>$arrVars]);
             if(!isset($arrData)){
               $arrData = [];
@@ -99,7 +98,7 @@ function startFramework()
         if($arrVars['haveFunction']){
         render($arrVars['templatePath'] . $arrVars['templateFile'], $arrData);
         }else{
-          render($arrVars['templatePath'] . $arrVars['templateFile'], []);
+          render($arrVars['templatePath'] . $arrVars['templateFile'], $arrData);
         }
     } else{
         if($arrVars['haveFunction']) {

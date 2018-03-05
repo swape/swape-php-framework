@@ -1,5 +1,4 @@
-swape-php-framework
-===
+# swape-php-framework
 
 Easy and fast PHP micro-framework.
 
@@ -14,15 +13,15 @@ But this framework have it's limitations. But those limitations are not so usual
 ### Directory set up.
 
 ```
-/controler   # controllers directory
-/template    # template directory
+/app/controler   # controllers directory
+/app/template    # template directory
 /sf          # all the framework files
 /static      # static files like js and img and others
 ```
 
 When you first enter the page, is going to look for matching template and controller.
 
-Let's say the url is `http://localhost:8080/test`. Then it is looking for template with the name `/template/test/index.php` and show the content of that file. So the *test* is the matching template from the path to the file.
+Let's say the url is `http://localhost:8080/test`. Then it is looking for template with the name `/template/test/index.php` and show the content of that file. So the _test_ is the matching template from the path to the file.
 
 The same is url is also going to look for a controller `/controller/test.php` and run the **sf_index** function inside the **sf_testClass** class.
 
@@ -30,13 +29,14 @@ If there is no matching controller, then it just show the template.
 
 If there is no template but there is a controller it just run that matching controller and if there is a return data array it prints it out as json. This is real handy for making json api.
 
-If you have both controller and template it runs the function and return the *return array* from the function and run it with the template through the **$data** array.
+If you have both controller and template it runs the function and return the _return array_ from the function and run it with the template through the **$data** array.
 
 If the url have another level like this: `http://localhost:8080/test/another`, then it is looking for the template in here `/template/test/another.php` and a controller file `/controller/test.php` with the class name **sf_testClass** and a function named **sf_another()**.
 
 ### Controller example
 
 `/controller/test.php`
+
 ```php
 <?php
 
@@ -57,22 +57,21 @@ class sf_testClass
         return ['some_data'=> 42];
     }
 }
-
 ```
 
-Here is a typical controller that have the name **test.php**, and a class name **sf_testClass** and functions with **sf_** prefix just like the class name.
+Here is a typical controller that have the name **test.php**, and a class name **sf_testClass** and functions with **sf\_** prefix just like the class name.
 
-| Url | controller file name | class name | function name |
-| -- | -- | -- | -- |
-| /test | /controller/test.php | sf_testClass | sf_index |
-| /test/test | /controller/test.php | sf_testClass | sf_test |
-| /test/test2 | /controller/test.php | sf_testClass | sf_test2 |
-| / | /controller/index.php | sf_indexClass | sf_index |
-| /index | /controller/index.php | sf_indexClass | sf_index |
-| /index/test | /controller/index.php | sf_indexClass | sf_test |
-| /index/index | /controller/index.php | sf_indexClass | sf_index |
-| /another/myfunc | /controller/another.php | sf_anotherClass | sf_myfunc |
-| /another/myfunc/testing | /controller/another.php | sf_anotherClass | sf_myfunc |
+| Url                     | controller file name    | class name      | function name |
+| ----------------------- | ----------------------- | --------------- | ------------- |
+| /test                   | /controller/test.php    | sf_testClass    | sf_index      |
+| /test/test              | /controller/test.php    | sf_testClass    | sf_test       |
+| /test/test2             | /controller/test.php    | sf_testClass    | sf_test2      |
+| /                       | /controller/index.php   | sf_indexClass   | sf_index      |
+| /index                  | /controller/index.php   | sf_indexClass   | sf_index      |
+| /index/test             | /controller/index.php   | sf_indexClass   | sf_test       |
+| /index/index            | /controller/index.php   | sf_indexClass   | sf_index      |
+| /another/myfunc         | /controller/another.php | sf_anotherClass | sf_myfunc     |
+| /another/myfunc/testing | /controller/another.php | sf_anotherClass | sf_myfunc     |
 
 Notice the last url `/another/myfunc/testing` is going to act as it was just `/another/myfunc`. Don't worry you can get the full path in the argument array of the function.
 
@@ -82,7 +81,7 @@ Every function must return an array. This array is used to make a return json if
 
 If you like you can get the ready made array of data. `sf_index($arr)`
 
-Content of this array is where you can get stuff like query parameters, request method, db object and other useful information from.
+Content of this array is where you can get stuff like query parameters, request method, db object and other useful information.
 
 ### Function return array and template data
 
@@ -93,12 +92,73 @@ But if there is a template then data can be accessed from **$data** variable in 
 
 ### Setting up DB
 
-TODO
+To set up a mysql or other PDO database, you have to set up the credentials in **sf/config.php** file
+And the PDO object is fetched into the function with all other data.
 
-### DB models
+Here is an example of how you can make 2 api routes with "get all" and insert data to a table.
 
-TODO
+```php
+<?php
+// Path: /app/controller/api.php
+class sf_apiClass
+{
 
-### Template helpers
+    public function sf_index($arr)
+    {
 
-TODO
+      $strSQL = 'SELECT * FROM `test_table` ';
+      $objPrepare = $arr['db']->prepare($strSQL);
+      $objPrepare->setFetchMode(PDO::FETCH_ASSOC);
+      $objPrepare->execute();
+      $arrData = $objPrepare->fetchAll();
+
+      return $arrData;
+    }
+
+    public function sf_insert($arr)
+    {
+      if($arr['method'] == 'POST'){
+        $strSQL = "INSERT INTO test_table SET text = :mytext ";
+
+        $sth = $arr['db']->prepare($strSQL);
+        $sth->bindParam(':mytext', $arr['data']['req']['myvar']);
+        $sth->execute();
+        $error = $sth->errorInfo();
+        if(isset($error[0]) && $error[0] == '00000'){
+          return ['id'=> $arr['db']->lastInsertId()];
+        }else{
+          return ['error'=> $sth->errorInfo()];
+        }
+
+      }else{
+        return ['method'=> $arr['method'] ];
+      }
+
+    }
+
+}
+
+```
+As you can see sf_index is getting the PDO object from **$arr['db']** variable.
+
+In sf_index function you see that we check if method is a POST and then we get the data from  **$arr['data']['req']** this is fetched from json or url encoded POST method from the browser.
+
+**$arr['data']** also contains post and get data.
+
+### Template
+
+Since PHP is a templating language, we don't need to learn another templating language that is slower than PHP.
+All the matching php files under _app/template_ is mapped automatically to the path.
+
+| Url                | template file name            |
+| ------------------ | ----------------------------- |
+| /test              | /app/template/test/index.php  |
+| /test/test         | /app/template/test/test.php   |
+| /test/test2        | /app/template/test/test2.php  |
+| /                  | /app/template/index.php       |
+| /index             | /app/template/index/index.php |
+| /index/test        | /app/template/index/test.php  |
+| /index/index       | /app/template/index/index.php |
+| /index/index/index | /app/template/index/index.php |
+
+If there is no matching controller, only the template is showed. But if there is a matching controller, return data from that controller function is passed to the template.
