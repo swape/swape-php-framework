@@ -15,8 +15,8 @@
       <p>myvar data from controller:
 
         <?php
-        foreach ($data['myvar'] as $value ) {
-          echo "<div>${value['id']}: ${value['text']}</div>";
+        foreach ($data['myvar'] as $value) {
+            echo "<div>${value['id']}: ${value['text']}</div>";
         }
         ?>
 

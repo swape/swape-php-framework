@@ -10,14 +10,13 @@ class sf_indexClass
 
     public function sf_index($arr)
     {
+        $strSQL = 'SELECT * FROM `test_table` ';
+        $objPrepare = $arr['db']->prepare($strSQL);
+        $objPrepare->setFetchMode(PDO::FETCH_ASSOC);
+        $objPrepare->execute();
+        $arrData = $objPrepare->fetchAll();
 
-      $strSQL = 'SELECT * FROM `test_table` ';
-      $objPrepare = $arr['db']->prepare($strSQL);
-      $objPrepare->setFetchMode(PDO::FETCH_ASSOC);
-      $objPrepare->execute();
-      $arrData = $objPrepare->fetchAll();
-
-      return ['myvar'=>$arrData];
+        return ['myvar'=>$arrData];
     }
 
     public function sf_test2()
