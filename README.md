@@ -19,27 +19,25 @@ But this framework have it's limitations. But those limitations are not so usual
 /static      # static files like js and img and others
 ```
 
-When you first enter the page, is going to look for matching template and controller.
+When you first enter the page, the framework is going to look for matching template and controller.
 
-Let's say the url is `http://localhost:8080/test`. Then it is looking for template with the name `/template/test/index.php` and show the content of that file. So the _test_ is the matching template from the path to the file.
+Let's say the url is `http://localhost:8080/test`. Then it is looking for template with the name `app/template/test/index.php` and show the content of that file. So the _test_ is the matching template from the path to the file.
 
-The same is url is also going to look for a controller `/controller/test.php` and run the **sf_index** function inside the **sf_testClass** class.
+The same is url is also going to look for a controller `app/controller/test.php` and run the **sf_index** function inside the **sf_testClass** class.
 
-If there is no matching controller, then it just show the template.
+If there is no matching controller, then it shows the template.
 
-If there is no template but there is a controller it just run that matching controller and if there is a return data array it prints it out as json. This is real handy for making json api.
+If there is no template but there is a controller it run that matching controller function and if there is a return data array it prints it out as json. This is real handy for making json api.
 
-If you have both controller and template it runs the function and return the _return array_ from the function and run it with the template through the **$data** array.
+If you have both controller and template it runs the function and return the _return array_ from the function and reveal it with the template through the **$data** array variable.
 
-If the url have another level like this: `http://localhost:8080/test/another`, then it is looking for the template in here `/template/test/another.php` and a controller file `/controller/test.php` with the class name **sf_testClass** and a function named **sf_another()**.
+If the url have another level like this: `http://localhost:8080/test/another`, then it is looking for the template in  `app/template/test/another.php` and a controller file `app/controller/test.php` with the class name **sf_testClass** and a function named **sf_another()**.
 
 ### Controller example
 
-`/controller/test.php`
-
 ```php
 <?php
-
+// path: app/controller/test.php
 class sf_testClass
 {
     public function sf_test()
@@ -81,11 +79,11 @@ Every function must return an array. This array is used to make a return json if
 
 If you like you can get the ready made array of data. `sf_index($arr)`
 
-Content of this array is where you can get stuff like query parameters, request method, db object and other useful information.
+Content of this array is where you can find variables like query parameters, request method, db object and other useful information.
 
 ### Function return array and template data
 
-When a function returns an array it is passed to matching template name.
+When a function returns an array, it is passed to matching template name.
 If there is no template, then it is converted to json object.
 
 But if there is a template then data can be accessed from **$data** variable in template file.
@@ -95,7 +93,7 @@ But if there is a template then data can be accessed from **$data** variable in 
 To set up a mysql or other PDO database, you have to set up the credentials in **sf/config.php** file
 And the PDO object is fetched into the function with all other data.
 
-Here is an example of how you can make 2 api routes with "get all" and insert data to a table.
+Here is an example of how you can make two api routes with "get all" function and "insert" function.
 
 ```php
 <?php
@@ -117,20 +115,20 @@ class sf_apiClass
 
     public function sf_insert($arr)
     {
-      if($arr['method'] == 'POST'){
+      if ($arr['method'] == 'POST') {
         $strSQL = "INSERT INTO test_table SET text = :mytext ";
 
         $sth = $arr['db']->prepare($strSQL);
         $sth->bindParam(':mytext', $arr['data']['req']['myvar']);
         $sth->execute();
         $error = $sth->errorInfo();
-        if(isset($error[0]) && $error[0] == '00000'){
+        if (isset($error[0]) && $error[0] == '00000') {
           return ['id'=> $arr['db']->lastInsertId()];
-        }else{
+        } else {
           return ['error'=> $sth->errorInfo()];
         }
 
-      }else{
+      } else {
         return ['method'=> $arr['method'] ];
       }
 
@@ -139,9 +137,9 @@ class sf_apiClass
 }
 
 ```
-As you can see sf_index is getting the PDO object from **$arr['db']** variable.
+As you can see **sf_index** is getting the PDO object from **$arr['db']** variable.
 
-In sf_index function you see that we check if method is a POST and then we get the data from  **$arr['data']['req']** this is fetched from json or url encoded POST method from the browser.
+In sf_index function, we check if method is a POST and then we get the data from  **$arr['data']['req']** this is fetched from json or url encoded POST method from the browser.
 
 **$arr['data']** also contains post and get data.
 
