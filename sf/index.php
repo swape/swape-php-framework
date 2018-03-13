@@ -69,9 +69,6 @@ function startFramework()
     }
 
     if (file_exists($strControllerFileName)) {
-        // we just call db if we have a controller
-        $arrVars['db'] = getDbObj();
-
         $arrVars['haveController'] = true;
         require $strControllerFileName;
         $strClassName = 'sf_' . $arrReqPath[0] .'Class';
