@@ -9,6 +9,18 @@ All frameworks works almost the same as each other. You have to set up a router,
 But this framework have it's limitations. But those limitations are not so usual and we can have a workaround for those.
 
 ## Getting started
+TODO:
+- Writing getting started.
+- Writing more examples and docs.
+- Test with nginx 
+
+
+## Setting up
+In apache env, you have to point to web directory. This is where the root of your app should be.
+
+## SPF on Heroku
+Procfile, composer.json and app.json is for Heroku. Please see documentation for php apps on Heroku.
+If you are not planing to have this app on Heroku, you can delete these files.
 
 ### Directory set up.
 
