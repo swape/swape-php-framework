@@ -28,8 +28,8 @@ function startFramework()
     }
 
     // set the template path
-    $arrVars['templatePath'] = $arrVars['path'] . '/app/template/';
-    $arrVars['controllerPath'] = $arrVars['path'] . '/app/controller/';
+    $arrVars['templatePath'] = $arrVars['path'] . '/web/app/template/';
+    $arrVars['controllerPath'] = $arrVars['path'] . '/web/app/controller/';
 
     // set the query from url
     $arrVars['queryPath'] = explode('?', $_SERVER['REQUEST_URI']);
@@ -115,11 +115,19 @@ function startFramework()
         }
     } else {
         if ($arrVars['haveFunction']) {
+            header("Access-Control-Allow-Origin: *");
+            header("X-Frame-Options: DENY");
+            header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+            header("Vary: Accept-Encoding");
             header('Content-Type: application/json');
             echo json_encode($arrData);
         } else {
             // 404 page
             http_response_code(404);
+            header("Access-Control-Allow-Origin: *");
+            header("X-Frame-Options: DENY");
+            header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+            header("Vary: Accept-Encoding");
             header('Content-Type: application/json');
             echo json_encode(['error'=>'not found']);
         }
