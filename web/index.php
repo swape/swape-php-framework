@@ -1,3 +1,3 @@
 <?php
 // requiring framework
-require './sf/index.php';
+require '../sf/index.php';
