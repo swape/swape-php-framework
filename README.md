@@ -13,10 +13,10 @@ But this framework have it's limitations. But those limitations are not so usual
 ### Directory set up.
 
 ```
-/app/controler   # controllers directory
-/app/template    # template directory
-/sf          # all the framework files
-/static      # static files like js and img and others
+/web/app/controler   # controllers directory
+/web/app/template    # template directory
+/sf                  # all the framework files
+/web/static          # static files like js and img and others
 ```
 
 When you first enter the page, the framework is going to look for matching template and controller.
@@ -61,15 +61,15 @@ Here is a typical controller that have the name **test.php**, and a class name *
 
 | Url                     | controller file name    | class name      | function name |
 | ----------------------- | ----------------------- | --------------- | ------------- |
-| /test                   | /controller/test.php    | sf_testClass    | sf_index      |
-| /test/test              | /controller/test.php    | sf_testClass    | sf_test       |
-| /test/test2             | /controller/test.php    | sf_testClass    | sf_test2      |
-| /                       | /controller/index.php   | sf_indexClass   | sf_index      |
-| /index                  | /controller/index.php   | sf_indexClass   | sf_index      |
-| /index/test             | /controller/index.php   | sf_indexClass   | sf_test       |
-| /index/index            | /controller/index.php   | sf_indexClass   | sf_index      |
-| /another/myfunc         | /controller/another.php | sf_anotherClass | sf_myfunc     |
-| /another/myfunc/testing | /controller/another.php | sf_anotherClass | sf_myfunc     |
+| /test                   | /app/controller/test.php    | sf_testClass    | sf_index      |
+| /test/test              | /app/controller/test.php    | sf_testClass    | sf_test       |
+| /test/test2             | /app/controller/test.php    | sf_testClass    | sf_test2      |
+| /                       | /app/controller/index.php   | sf_indexClass   | sf_index      |
+| /index                  | /app/controller/index.php   | sf_indexClass   | sf_index      |
+| /index/test             | /app/controller/index.php   | sf_indexClass   | sf_test       |
+| /index/index            | /app/controller/index.php   | sf_indexClass   | sf_index      |
+| /another/myfunc         | /app/controller/another.php | sf_anotherClass | sf_myfunc     |
+| /another/myfunc/testing | /app/controller/another.php | sf_anotherClass | sf_myfunc     |
 
 Notice the last url `/another/myfunc/testing` is going to act as it was just `/another/myfunc`. Don't worry you can get the full path in the argument array of the function.
 
