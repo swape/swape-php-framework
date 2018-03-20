@@ -1,4 +1,4 @@
-# swape-php-framework
+# swape-php-framework v0.3.0
 
 Easy and fast PHP micro-framework.
 
@@ -12,7 +12,7 @@ But this framework have it's limitations. But those limitations are not so usual
 TODO:
 - Writing getting started.
 - Writing more examples and docs.
-- Test with nginx 
+- Test with nginx
 
 
 ## Setting up
@@ -115,41 +115,30 @@ class sf_apiClass
 
     public function sf_index($arr)
     {
-
-      $strSQL = 'SELECT * FROM `test_table` ';
-      $objPrepare = $arr['db']->prepare($strSQL);
-      $objPrepare->setFetchMode(PDO::FETCH_ASSOC);
-      $objPrepare->execute();
-      $arrData = $objPrepare->fetchAll();
-
-      return $arrData;
+      $result = $arr['db']->query('SELECT * FROM `test_table`');
+      return ['myvar'=> $result];
     }
 
     public function sf_insert($arr)
     {
       if ($arr['method'] == 'POST') {
         $strSQL = "INSERT INTO test_table SET text = :mytext ";
+        $arrParams = [
+          ['name'=>':mytext' , 'value'=> $arr['data']['req']['myvar']]
+        ];
 
-        $sth = $arr['db']->prepare($strSQL);
-        $sth->bindParam(':mytext', $arr['data']['req']['myvar']);
-        $sth->execute();
-        $error = $sth->errorInfo();
-        if (isset($error[0]) && $error[0] == '00000') {
-          return ['id'=> $arr['db']->lastInsertId()];
-        } else {
-          return ['error'=> $sth->errorInfo()];
-        }
-
+        $result = $arr['db']->query($strSQL, $arrParams);
+        return ['myvar'=> $result];
       } else {
         return ['method'=> $arr['method'] ];
       }
-
     }
-
 }
 
 ```
 As you can see **sf_index** is getting the PDO object from **$arr['db']** variable.
+
+You can use PDO object directly with **$arr['db']->pdo** or use the **$arr['db']->query** to access the database. 
 
 In sf_index function, we check if method is a POST and then we get the data from  **$arr['data']['req']** this is fetched from json or url encoded POST method from the browser.
 
