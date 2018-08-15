@@ -20,7 +20,7 @@ function startFramework()
     // get the system path and remove last part "sf"
     $arrSystemPath = explode('/', __DIR__);
     array_pop($arrSystemPath);
-    $arrVars['path'] =  implode('/', $arrSystemPath);
+    $arrVars['path'] = implode('/', $arrSystemPath);
 
     // require the config file
     if (file_exists($arrVars['path'] . '/sf/config.php')) {
@@ -47,7 +47,7 @@ function startFramework()
 
     // look for sub template path from url
     if (isset($arrReqPath[1]) and $arrReqPath[1] != '') {
-        $arrVars['templateFile'] = $arrVars['templateDir'] . '/' . $arrReqPath[1] .'.php';
+        $arrVars['templateFile'] = $arrVars['templateDir'] . '/' . $arrReqPath[1] . '.php';
     }
 
     // by default we don't have template
@@ -62,7 +62,7 @@ function startFramework()
     $arrVars['haveController'] = false;
     $arrVars['haveFunction'] = false;
 
-    $strControllerFileName = $arrVars['controllerPath'] . $arrReqPath[0] .'.php';
+    $strControllerFileName = $arrVars['controllerPath'] . $arrReqPath[0] . '.php';
     if (!isset($arrReqPath[0]) or $arrReqPath[0] == '') {
         $strControllerFileName = $arrVars['controllerPath'] . 'index.php';
         $arrReqPath[0] = 'index';
@@ -71,7 +71,7 @@ function startFramework()
     if (file_exists($strControllerFileName)) {
         $arrVars['haveController'] = true;
         require $strControllerFileName;
-        $strClassName = 'sf_' . $arrReqPath[0] .'Class';
+        $strClassName = 'sf_' . $arrReqPath[0] . 'Class';
         $objClass = new $strClassName;
 
         // getting the Function
@@ -79,7 +79,7 @@ function startFramework()
         if (isset($arrReqPath[1]) and $arrReqPath[1] != '') {
             $strFunctionName = 'sf_' . $arrReqPath[1];
         }
-        $arrCallable = [$objClass , $strFunctionName];
+        $arrCallable = [$objClass, $strFunctionName];
         if (is_callable($arrCallable)) {
             $arrVars['haveFunction'] = true;
             // sending data from POST if we have any
@@ -97,7 +97,7 @@ function startFramework()
                 }
             }
 
-            $arrData = call_user_func_array($arrCallable, ['vars'=>$arrVars]);
+            $arrData = call_user_func_array($arrCallable, ['vars' => $arrVars]);
             if (!isset($arrData)) {
                 $arrData = [];
             }
@@ -112,21 +112,13 @@ function startFramework()
         }
     } else {
         if ($arrVars['haveFunction']) {
-            header("Access-Control-Allow-Origin: *");
-            header("X-Frame-Options: DENY");
-            header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
-            header("Vary: Accept-Encoding");
-            header('Content-Type: application/json');
+            addHeader();
             echo json_encode($arrData);
         } else {
             // 404 page
             http_response_code(404);
-            header("Access-Control-Allow-Origin: *");
-            header("X-Frame-Options: DENY");
-            header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
-            header("Vary: Accept-Encoding");
-            header('Content-Type: application/json');
-            echo json_encode(['error'=>'not found']);
+            addHeader();
+            echo json_encode(['error' => 'not found']);
         }
     }
 }
@@ -134,6 +126,14 @@ function startFramework()
 function render($template, &$data)
 {
     include $template;
+}
+function addHeader()
+{
+    header("Access-Control-Allow-Origin: *");
+    header("X-Frame-Options: DENY");
+    header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+    header("Vary: Accept-Encoding");
+    header('Content-Type: application/json');
 }
 
 startFramework();

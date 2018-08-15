@@ -13,7 +13,7 @@ class sf_apiClass
         if ($arr['method'] == 'POST' && isset($arr['data']['req']['myvar'])) {
             $strSQL = "INSERT INTO test_table SET text = :mytext ";
             $arrParams = [
-              ['name'=>':mytext' , 'value'=> $arr['data']['req']['myvar']]
+                ['name'=>':mytext' , 'value'=> $arr['data']['req']['myvar']]
             ];
 
             $result = $arr['db']->query($strSQL, $arrParams);
