@@ -3,7 +3,15 @@
 ini_set('display_errors', 'on');
 error_reporting(E_ALL);
 
-require_once('PDOWrapperClass.php');
+require_once 'PDOWrapperClass.php';
 
-$arrVars['some_info_from_config'] = 'hello';
-$arrVars['db'] = new PDOWrapperClass('mysql:host=localhost;dbname=testdb', 'root', 'root');
+$arr_vars['some_info_from_config'] = 'hello';
+// use $db_host = ''; for not using the db
+$db_host = 'localhost';
+$db_name = 'testdb';
+$db_user = 'root';
+$db_pass = 'root';
+
+if ($db_host != '' and $db_name != '') {
+    $arr_vars['db'] = new PDOWrapperClass("mysql:host=${db_host};dbname=${db_name}", $db_user, $db_pass);
+}

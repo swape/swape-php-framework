@@ -15,107 +15,108 @@ if (!function_exists('getallheaders')) {
 
 function startFramework()
 {
-    $arrVars = [];
+    $arr_vars = [];
 
-    // get the system path and remove last part "sf"
-    $arrSystemPath = explode('/', __DIR__);
-    array_pop($arrSystemPath);
-    $arrVars['path'] = implode('/', $arrSystemPath);
+// get the system path and remove last part "sf"
+    $system_path = explode('/', __DIR__);
+    array_pop($system_path);
+    $arr_vars['path'] = implode('/', $system_path);
 
-    // require the config file
-    if (file_exists($arrVars['path'] . '/sf/config.php')) {
+// require the config file
+    if (file_exists($arr_vars['path'] . '/sf/config.php')) {
         include 'config.php';
     }
 
-    // set the template path
-    $arrVars['templatePath'] = $arrVars['path'] . '/web/app/template/';
-    $arrVars['controllerPath'] = $arrVars['path'] . '/web/app/controller/';
+// set the template path
+    $arr_vars['templatePath'] = $arr_vars['path'] . '/web/app/template/';
+    $arr_vars['controllerPath'] = $arr_vars['path'] . '/web/app/controller/';
 
-    // set the query from url
-    $arrVars['queryPath'] = explode('?', $_SERVER['REQUEST_URI']);
+// set the query from url
+    $arr_vars['queryPath'] = explode('?', $_SERVER['REQUEST_URI']);
 
-    // set the method
-    $arrVars['method'] = $_SERVER['REQUEST_METHOD'];
+// set the method
+    $arr_vars['method'] = $_SERVER['REQUEST_METHOD'];
 
-    // skip the first empty element
-    $arrReqPath = explode('/', $arrVars['queryPath'][0]);
-    array_shift($arrReqPath);
+// skip the first empty element
+    $req_path = explode('/', $arr_vars['queryPath'][0]);
+    array_shift($req_path);
 
-    // set the default template url
-    $arrVars['templateDir'] = $arrReqPath[0];
-    $arrVars['templateFile'] = $arrVars['templateDir'] . '/index.php';
+// set the default template url
+    $arr_vars['templateDir'] = $req_path[0];
+    $arr_vars['templateFile'] = $arr_vars['templateDir'] . '/index.php';
 
-    // look for sub template path from url
-    if (isset($arrReqPath[1]) and $arrReqPath[1] != '') {
-        $arrVars['templateFile'] = $arrVars['templateDir'] . '/' . $arrReqPath[1] . '.php';
+// look for sub template path from url
+    if (isset($req_path[1]) and $req_path[1] != '') {
+        $arr_vars['templateFile'] = $arr_vars['templateDir'] . '/' . $req_path[1] . '.php';
     }
 
-    // by default we don't have template
-    $arrVars['haveTemplate'] = false;
+// by default we don't have template
+    $arr_vars['haveTemplate'] = false;
 
-    // if the file exists
-    if (file_exists($arrVars['templatePath'] . $arrVars['templateFile'])) {
-        $arrVars['haveTemplate'] = true;
+// if the file exists
+    if (file_exists($arr_vars['templatePath'] . $arr_vars['templateFile'])) {
+        $arr_vars['haveTemplate'] = true;
     }
 
-    // load the controller if we have it
-    $arrVars['haveController'] = false;
-    $arrVars['haveFunction'] = false;
+// load the controller if we have it
+    $arr_vars['haveController'] = false;
+    $arr_vars['haveFunction'] = false;
 
-    $strControllerFileName = $arrVars['controllerPath'] . $arrReqPath[0] . '.php';
-    if (!isset($arrReqPath[0]) or $arrReqPath[0] == '') {
-        $strControllerFileName = $arrVars['controllerPath'] . 'index.php';
-        $arrReqPath[0] = 'index';
+    $controller_filename = $arr_vars['controllerPath'] . $req_path[0] . '.php';
+    if (!isset($req_path[0]) or $req_path[0] == '') {
+        $controller_filename = $arr_vars['controllerPath'] . 'index.php';
+        $req_path[0] = 'index';
     }
 
-    if (file_exists($strControllerFileName)) {
-        $arrVars['haveController'] = true;
-        require $strControllerFileName;
-        $strClassName = 'sf_' . $arrReqPath[0] . 'Class';
-        $objClass = new $strClassName;
+    if (file_exists($controller_filename)) {
+        $arr_vars['haveController'] = true;
+        require $controller_filename;
+        $controller_class_name = 'sf_' . $req_path[0] . 'Class';
+        $controller_class = new $controller_class_name;
 
-        // getting the Function
-        $strFunctionName = 'sf_index';
-        if (isset($arrReqPath[1]) and $arrReqPath[1] != '') {
-            $strFunctionName = 'sf_' . $arrReqPath[1];
+// getting the Function
+        $controller_function_name = 'sf_index';
+        if (isset($req_path[1]) and $req_path[1] != '') {
+            $controller_function_name = 'sf_' . $req_path[1];
         }
-        $arrCallable = [$objClass, $strFunctionName];
-        if (is_callable($arrCallable)) {
-            $arrVars['haveFunction'] = true;
-            // sending data from POST if we have any
-            $arrVars['data']['get'] = $_GET;
-            $arrVars['data']['post'] = $_POST;
-            $arrVars['data']['header'] = getallheaders();
+        $arr_callable = [$controller_class, $controller_function_name];
+        if (is_callable($arr_callable)) {
+            $arr_vars['haveFunction'] = true;
 
-            $inputReq = file_get_contents('php://input');
-            if ($inputReq) {
-                $jsonData = json_decode($inputReq, true);
-                if ($jsonData) {
-                    $arrVars['data']['req'] = $jsonData;
+// sending data from POST if we have any
+            $arr_vars['data']['get'] = $_GET;
+            $arr_vars['data']['post'] = $_POST;
+            $arr_vars['data']['header'] = getallheaders();
+
+            $input_req = file_get_contents('php://input');
+            if ($input_req) {
+                $json_data = json_decode($input_req, true);
+                if ($json_data) {
+                    $arr_vars['data']['req'] = $json_data;
                 } else {
-                    parse_str($inputReq, $arrVars['data']['req']);
+                    parse_str($input_req, $arr_vars['data']['req']);
                 }
             }
 
-            $arrData = call_user_func_array($arrCallable, ['vars' => $arrVars]);
-            if (!isset($arrData)) {
-                $arrData = [];
+            $arr_data = call_user_func_array($arr_callable, ['vars' => $arr_vars]);
+            if (!isset($arr_data)) {
+                $arr_data = [];
             }
         }
     }
 
-    if ($arrVars['haveTemplate']) {
-        if ($arrVars['haveFunction']) {
-            render($arrVars['templatePath'] . $arrVars['templateFile'], $arrData);
+    if ($arr_vars['haveTemplate']) {
+        if ($arr_vars['haveFunction']) {
+            render($arr_vars['templatePath'] . $arr_vars['templateFile'], $arr_data);
         } else {
-            render($arrVars['templatePath'] . $arrVars['templateFile'], $arrData);
+            render($arr_vars['templatePath'] . $arr_vars['templateFile'], $arr_data);
         }
     } else {
-        if ($arrVars['haveFunction']) {
+        if ($arr_vars['haveFunction']) {
             addHeader();
-            echo json_encode($arrData);
+            echo json_encode($arr_data);
         } else {
-            // 404 page
+// 404 page
             http_response_code(404);
             addHeader();
             echo json_encode(['error' => 'not found']);
