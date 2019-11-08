@@ -1,4 +1,4 @@
-# swape-php-framework v0.3.0
+# swape-php-framework v0.3.1
 
 Easy and fast PHP micro-framework.
 
@@ -6,19 +6,20 @@ Why another php framework?
 
 All frameworks works almost the same as each other. You have to set up a router, a controller and a template. And then telling it to match this path with that template and controller. So this is a micro-framework that takes care of all that. And since it is usual to have a modern custom json api servers and not the old boring RESTFULish api's. It is also taken care of in this framework.
 
-But this framework have it's limitations. But those limitations are not so usual and we can have a workaround for those.
-
 ## Getting started
-TODO:
-- Writing getting started.
-- Writing more examples and docs.
-- Test with nginx
 
+TODO:
+
+[ ]  Write getting started.
+[ ]  Write more examples and docs.
+[ ]  Test with nginx
 
 ## Setting up
+
 In apache env, you have to point to web directory. This is where the root of your app should be.
 
 ## SPF on Heroku
+
 Procfile, composer.json and app.json is for Heroku. Please see documentation for php apps on Heroku.
 If you are not planing to have this app on Heroku, you can delete these files.
 
@@ -41,9 +42,9 @@ If there is no matching controller, then it shows the template.
 
 If there is no template but there is a controller it run that matching controller function and if there is a return data array it prints it out as json. This is real handy for making json api.
 
-If you have both controller and template it runs the function and return the _return array_ from the function and reveal it with the template through the **$data** array variable.
+If you have both controller and template it runs the function and return the _return array_ from the function and reveal it with the template through the **\$data** array variable.
 
-If the url have another level like this: `http://localhost:8080/test/another`, then it is looking for the template in  `app/template/test/another.php` and a controller file `app/controller/test.php` with the class name **sf_testClass** and a function named **sf_another()**.
+If the url have another level like this: `http://localhost:8080/test/another`, then it is looking for the template in `app/template/test/another.php` and a controller file `app/controller/test.php` with the class name **sf_testClass** and a function named **sf_another()**.
 
 ### Controller example
 
@@ -71,8 +72,8 @@ class sf_testClass
 
 Here is a typical controller that have the name **test.php**, and a class name **sf_testClass** and functions with **sf\_** prefix just like the class name.
 
-| Url                     | controller file name    | class name      | function name |
-| ----------------------- | ----------------------- | --------------- | ------------- |
+| Url                     | controller file name        | class name      | function name |
+| ----------------------- | --------------------------- | --------------- | ------------- |
 | /test                   | /app/controller/test.php    | sf_testClass    | sf_index      |
 | /test/test              | /app/controller/test.php    | sf_testClass    | sf_test       |
 | /test/test2             | /app/controller/test.php    | sf_testClass    | sf_test2      |
@@ -85,7 +86,7 @@ Here is a typical controller that have the name **test.php**, and a class name *
 
 Notice the last url `/another/myfunc/testing` is going to act as it was just `/another/myfunc`. Don't worry you can get the full path in the argument array of the function.
 
-Every function must return an array. This array is used to make a return json if there is no template or if there is a matching template it is revealed as array **$data**.
+Every function must return an array. This array is used to make a return json if there is no template or if there is a matching template it is revealed as array **\$data**.
 
 ### Function argument array
 
@@ -98,7 +99,7 @@ Content of this array is where you can find variables like query parameters, req
 When a function returns an array, it is passed to matching template name.
 If there is no template, then it is converted to json object.
 
-But if there is a template then data can be accessed from **$data** variable in template file.
+But if there is a template then data can be accessed from **\$data** variable in template file.
 
 ### Setting up DB
 
@@ -122,12 +123,12 @@ class sf_apiClass
     public function sf_insert($arr)
     {
       if ($arr['method'] == 'POST') {
-        $strSQL = "INSERT INTO test_table SET text = :mytext ";
-        $arrParams = [
+        $sql = "INSERT INTO test_table SET text = :mytext ";
+        $arr_params = [
           ['name'=>':mytext' , 'value'=> $arr['data']['req']['myvar']]
         ];
 
-        $result = $arr['db']->query($strSQL, $arrParams);
+        $result = $arr['db']->query($sql, $arr_params);
         return ['myvar'=> $result];
       } else {
         return ['method'=> $arr['method'] ];
@@ -136,13 +137,14 @@ class sf_apiClass
 }
 
 ```
-As you can see **sf_index** is getting the PDO object from **$arr['db']** variable.
 
-You can use PDO object directly with **$arr['db']->pdo** or use the **$arr['db']->query** to access the database. 
+As you can see **sf_index** is getting the PDO object from **\$arr['db']** variable.
 
-In sf_index function, we check if method is a POST and then we get the data from  **$arr['data']['req']** this is fetched from json or url encoded POST method from the browser.
+You can use PDO object directly with **\$arr['db']->pdo** or use the **\$arr['db']->query** to access the database.
 
-**$arr['data']** also contains post and get data.
+In sf_index function, we check if method is a POST and then we get the data from **\$arr['data']['req']** this is fetched from json or url encoded POST method from the browser.
+
+**\$arr['data']** also contains post and get data.
 
 ### Template
 
