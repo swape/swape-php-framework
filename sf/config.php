@@ -12,6 +12,6 @@ $db_name = 'testdb';
 $db_user = 'root';
 $db_pass = 'root';
 
-if ($db_host != '' and $db_name != '') {
-    $arr_vars['db'] = new PDOWrapperClass("mysql:host=${db_host};dbname=${db_name}", $db_user, $db_pass);
+if ($db_host != '' && $db_name != '') {
+  $arr_vars['db'] = new PDOWrapperClass("mysql:host=${db_host};dbname=${db_name}", $db_user, $db_pass);
 }

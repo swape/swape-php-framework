@@ -1,6 +1,6 @@
 <?php
 
-class sf_testClass
+class SFtestClass
 {
   public function sf_test()
   {

@@ -1,6 +1,6 @@
 <?php
 
-class sf_indexClass
+class SFindexClass
 {
   public function sf_test()
   {
